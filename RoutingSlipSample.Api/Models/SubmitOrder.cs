@@ -24,3 +24,13 @@ public interface OrderSubmissionAccepted
         GlobalTopology.Send.UseCorrelationId<OrderSubmissionAccepted>(x => x.OrderId);
     }
 }
+public interface OrderSubmissionAcceptedV2
+{
+    Guid OrderId { get; }
+
+    [ModuleInitializer]
+    internal static void Init()
+    {
+        GlobalTopology.Send.UseCorrelationId<OrderSubmissionAcceptedV2>(x => x.OrderId);
+    }
+}

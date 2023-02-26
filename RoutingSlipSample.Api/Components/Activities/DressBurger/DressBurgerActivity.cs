@@ -17,6 +17,7 @@ namespace RoutingSlipSample.Api.Components.Activities.DressBurger
             _logger.LogDebug($"Dress Burger: {context.Arguments.OrderId},");
             await Task.Delay(1000);
             return context.Completed();
+           // return context.Faulted();
         }
 
         public Task<CompensationResult> Compensate(CompensateContext<DressBurgerLog> context)

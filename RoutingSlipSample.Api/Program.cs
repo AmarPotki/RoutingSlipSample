@@ -7,6 +7,9 @@ using RoutingSlipSample.Api.Components.Consumers;
 using RoutingSlipSample.Contracts;
 using System.Xml;
 using Newtonsoft.Json.Linq;
+using RoutingSlipSample.Api.Extensions;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +23,9 @@ builder.Services.AddMassTransit(x =>
     {
         x.SetKebabCaseEndpointNameFormatter();
         // x.AddRabbitMqMessageScheduler();
-
+        x.ApplyCustomMassTransitConfiguration();
         x.AddConsumersFromNamespaceContaining<SubmitOrderConsumer>();
+        x.AddConsumersFromNamespaceContaining<SubmitOrderWaitUntilRoutingSlipFinishConsumer>();
         x.AddActivitiesFromNamespaceContaining<GrillBurgerActivity>();
         x.AddActivitiesFromNamespaceContaining<DressBurgerActivity>();
         x.UsingRabbitMq((context, cfg) =>
@@ -31,6 +35,7 @@ builder.Services.AddMassTransit(x =>
             //cfg.UseRabbitMqMessageScheduler();
             cfg.ConfigureEndpoints(context);
             cfg.Host("rabbitmq://amar:123@localhost:5672");
+            cfg.AutoStart = true;
 
             var options = new ServiceInstanceOptions();
 
@@ -42,6 +47,17 @@ builder.Services.AddMassTransit(x =>
         });
         x.AddRequestClient<SubmitOrder>();
     });
+
+builder.Host.UseSerilog((host, log) =>
+{
+    if (host.HostingEnvironment.IsProduction())
+        log.MinimumLevel.Information();
+    else
+        log.MinimumLevel.Debug();
+    log.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
+    log.MinimumLevel.Override("Quartz", LogEventLevel.Information);
+    log.WriteTo.Console();
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
