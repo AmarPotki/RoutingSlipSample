@@ -1,8 +1,12 @@
 using MassTransit;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RoutingSlipSample.Api.Components.Activities.DressBurger;
 using RoutingSlipSample.Api.Components.Activities.GrillBurger;
 using RoutingSlipSample.Api.Components.Consumers;
 using RoutingSlipSample.Contracts;
+using System.Xml;
+using Newtonsoft.Json.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMassTransit(x =>
     {
         x.SetKebabCaseEndpointNameFormatter();
-       // x.AddRabbitMqMessageScheduler();
+        // x.AddRabbitMqMessageScheduler();
 
         x.AddConsumersFromNamespaceContaining<SubmitOrderConsumer>();
         x.AddActivitiesFromNamespaceContaining<GrillBurgerActivity>();
@@ -53,4 +57,26 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready"),
+    ResponseWriter = HealthCheckResponseWriter
+});
+
+app.MapHealthChecks("/health/live", new HealthCheckOptions { ResponseWriter = HealthCheckResponseWriter });
+
 app.Run();
+
+static Task HealthCheckResponseWriter(HttpContext context, HealthReport result)
+{
+    var json = new JObject(
+        new JProperty("status", result.Status.ToString()),
+        new JProperty("results", new JObject(result.Entries.Select(entry => new JProperty(entry.Key, new JObject(
+            new JProperty("status", entry.Value.Status.ToString()),
+            new JProperty("description", entry.Value.Description),
+            new JProperty("data", JObject.FromObject(entry.Value.Data))))))));
+
+    context.Response.ContentType = "application/json";
+
+    return context.Response.WriteAsync(json.ToString());
+}
