@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoutingSlipSample.Api", "RoutingSlipSample.Api\RoutingSlipSample.Api.csproj", "{D8101FA4-EB59-4756-A9B4-8093245EFB75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoutingSlipSample.Api", "RoutingSlipSample.Api\RoutingSlipSample.Api.csproj", "{D8101FA4-EB59-4756-A9B4-8093245EFB75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoutingSlipSample.Contracts", "RoutingSlipSample.Contracts\RoutingSlipSample.Contracts.csproj", "{E55225A3-0DC3-4627-B9D7-D99D4B6E07F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoutingSlipSample.Contracts", "RoutingSlipSample.Contracts\RoutingSlipSample.Contracts.csproj", "{E55225A3-0DC3-4627-B9D7-D99D4B6E07F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationRoutingSlipSample.Api", "RegistrationRoutingSlipSample.Api\RegistrationRoutingSlipSample.Api.csproj", "{76BD1B63-D8C2-446A-871C-285BBAF8D2DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationRoutingSlipSample.Contracts", "RegistrationRoutingSlipSample.Contracts\RegistrationRoutingSlipSample.Contracts.csproj", "{24587D00-9041-4893-A2DC-88E8B7DAE202}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{E55225A3-0DC3-4627-B9D7-D99D4B6E07F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E55225A3-0DC3-4627-B9D7-D99D4B6E07F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E55225A3-0DC3-4627-B9D7-D99D4B6E07F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76BD1B63-D8C2-446A-871C-285BBAF8D2DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76BD1B63-D8C2-446A-871C-285BBAF8D2DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76BD1B63-D8C2-446A-871C-285BBAF8D2DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76BD1B63-D8C2-446A-871C-285BBAF8D2DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24587D00-9041-4893-A2DC-88E8B7DAE202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24587D00-9041-4893-A2DC-88E8B7DAE202}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24587D00-9041-4893-A2DC-88E8B7DAE202}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24587D00-9041-4893-A2DC-88E8B7DAE202}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

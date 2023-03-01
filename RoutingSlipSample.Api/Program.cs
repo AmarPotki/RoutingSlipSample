@@ -5,7 +5,6 @@ using RoutingSlipSample.Api.Components.Activities.DressBurger;
 using RoutingSlipSample.Api.Components.Activities.GrillBurger;
 using RoutingSlipSample.Api.Components.Consumers;
 using RoutingSlipSample.Contracts;
-using System.Xml;
 using Newtonsoft.Json.Linq;
 using RoutingSlipSample.Api.Extensions;
 using Serilog;
@@ -58,6 +57,8 @@ builder.Host.UseSerilog((host, log) =>
     log.MinimumLevel.Override("Quartz", LogEventLevel.Information);
     log.WriteTo.Console();
 });
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

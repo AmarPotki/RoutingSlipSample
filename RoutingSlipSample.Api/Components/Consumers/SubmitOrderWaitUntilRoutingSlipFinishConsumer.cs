@@ -34,7 +34,7 @@ public class SubmitOrderWaitUntilRoutingSlipFinishConsumer :
     RoutingSlip CreateRoutingSlip(ConsumeContext<SubmitOrderV2> context)
     {
         var builder = new RoutingSlipBuilder(Guid.NewGuid());
-        builder.AddSubscription(context.ReceiveContext.InputAddress, RoutingSlipEvents.Completed | RoutingSlipEvents.Faulted);
+        builder.AddSubscription(context.ReceiveContext.InputAddress, RoutingSlipEvents.ActivityCompleted | RoutingSlipEvents.ActivityFaulted);
 
 
         builder.AddVariable("OrderId", context.Message.OrderId);
