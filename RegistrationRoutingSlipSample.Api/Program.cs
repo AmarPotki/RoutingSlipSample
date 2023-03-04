@@ -50,6 +50,7 @@ builder.Services.AddMassTransit(x =>
     x.AddExecuteActivity<LicenseVerificationActivity,LicenseVerificationArguments>();
     x.AddActivity<EventRegistrationActivity, EventRegistrationArguments, EventRegistrationLog>();
     x.AddActivity<ProcessPaymentActivity, ProcessPaymentArguments,ProcessPaymentLog>();
+    x.AddExecuteActivity<AssignWaiverActivity, AssignWaiverArguments>();
     x.AddSagaStateMachine<RegistrationStateMachine, RegistrationState>();
     x.UsingRabbitMq((context, cfg) =>
     {

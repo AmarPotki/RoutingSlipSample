@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using Automatonymous;
+using MassTransit;
 
 namespace RegistrationRoutingSlipSample.Api.Components.Activities;
 
@@ -48,13 +49,13 @@ public class EventRegistrationActivity : IActivity<EventRegistrationArguments, E
 
         if (arguments.EventId?.StartsWith("DANGER") ?? false)
         {
-            //return context.ReviseItinerary(log, variables, x =>
-            //{
-            //    x.AddActivitiesFromSourceItinerary();
-            //    x.AddActivity("Assign Waiver", _provider.GetExecuteEndpoint<AssignWaiverActivity, AssignWaiverArguments>());
-            //});
+            return context.ReviseItinerary(log, variables, x =>
+            {
+                x.AddActivitiesFromSourceItinerary();
+                x.AddActivity("Assign Waiver", _provider.GetExecuteEndpoint<AssignWaiverActivity, AssignWaiverArguments>());
+            });
         }
-
+        
         return context.CompletedWithVariables(new
         {
             registrationId,
