@@ -51,6 +51,15 @@ public class RegistrationStateMachine : MassTransitStateMachine<RegistrationStat
 
         );
 
+        Schedule(()=>RetryDelayExpired,saga=>saga.ScheduleRetryToken, x =>
+        {
+            x.Received = r =>
+            {
+                r.CorrelateById(context => context.Message.ExpirationId);
+                r.ConfigureConsumeTopology = false;
+            };
+        });
+
     }
 
 
@@ -65,7 +74,7 @@ public class RegistrationStateMachine : MassTransitStateMachine<RegistrationStat
     public Event<RegistrationLicenseVerificationFailed> LicenseVerificationFailed { get; }
     public Event<RegistrationCompleted> EventRegistrationCompleted { get; }
     public Event<RegistrationPaymentFailed> PaymentFailed { get; }
-
+    public Schedule<RegistrationState, RetryDelayExpired> RetryDelayExpired { get; set; }
 }
 
 static class RegistrationStateMachineBehaviorExtensions

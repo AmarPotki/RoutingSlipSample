@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json.Linq;
+using RegistrationRoutingSlipSample.Api;
 using RegistrationRoutingSlipSample.Api.Components;
 using RegistrationRoutingSlipSample.Api.Components.Activities;
 using RegistrationRoutingSlipSample.Api.Components.Consumers;
@@ -21,7 +22,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddOpenTelemetry("RegistrationRoutingSlipSample.Api");
 builder.Services.AddDbContext<RegistrationDbContext>(r =>
 {
     var connectionString = "Server=192.168.10.140;Database=edaSagaRegistration;Persist Security Info=False;User ID=sa;Password=Ai@123456;Encrypt=False;TrustServerCertificate=True;"
@@ -38,6 +39,21 @@ builder.Services.AddSingleton<IEndpointAddressProvider, RabbitMqEndpointAddressP
 builder.Services.AddTransient<ISecurePaymentInfoService, SecurePaymentInfoService>();
 builder.Services.AddMassTransit(x =>
 {
+    //Some exceptions may be caused by a transient condition, such as a database deadlock, a busy web service,
+    //or some similar type of situation which usually clears up on a second attempt
+    x.AddConfigureEndpointsCallback((_,_,cfg)=>
+    {
+        cfg.UseMessageRetry((c) =>
+        {
+            c.Handle<TransientException>();
+            c.Interval(5, 500);
+        });
+        cfg.UseDelayedRedelivery(r =>
+        {
+            r.Handle<LongTransientException>();
+            r.Interval(500, 1000);
+        });
+    });
     x.SetEntityFrameworkSagaRepositoryProvider(r =>
     {
         r.ExistingDbContext<RegistrationDbContext>();
@@ -52,8 +68,12 @@ builder.Services.AddMassTransit(x =>
     x.AddActivity<ProcessPaymentActivity, ProcessPaymentArguments,ProcessPaymentLog>();
     x.AddExecuteActivity<AssignWaiverActivity, AssignWaiverArguments>();
     x.AddSagaStateMachine<RegistrationStateMachine, RegistrationState>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
+        //
+        
+
         cfg.UseDelayedMessageScheduler();
         cfg.ConfigureEndpoints(context);
         cfg.Host("rabbitmq://amar:123@localhost:5672");
@@ -65,6 +85,8 @@ builder.Services.AddMassTransit(x =>
         {
             instance.ConfigureEndpoints(context);
         });
+
+
     });
 });
 builder.Host.UseSerilog((host, log) =>
